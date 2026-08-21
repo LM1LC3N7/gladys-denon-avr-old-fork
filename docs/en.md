@@ -16,8 +16,10 @@ Four things show up per receiver:
 - **Power** — on/off, controllable.
 - **Volume** — 0-100%, controllable (mapped from the receiver's internal -80 dB to +18 dB scale).
 - **Mute** — on/off, controllable.
-- **Source** — read-only status line showing the exact input code reported by the receiver
-  (e.g. `TUNER`, `BD`, `NET`). To switch input, use the **Select input** action described below.
+- **Source** — a dropdown of the receiver's input codes (e.g. `TUNER`, `BD`, `NET`), directly on
+  the dashboard. The **Select input** action described below does the exact same thing and stays
+  available as an alternative — useful if your Gladys instance is on an older version that
+  doesn't render the dropdown yet.
 
 ## Prerequisites
 

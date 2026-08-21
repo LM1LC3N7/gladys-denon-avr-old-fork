@@ -17,9 +17,10 @@ Quatre éléments apparaissent par ampli :
 - **Alimentation** — marche/arrêt, contrôlable.
 - **Volume** — 0-100 %, contrôlable (converti depuis l'échelle interne de l'ampli, -80 dB à +18 dB).
 - **Muet** — marche/arrêt, contrôlable.
-- **Source** — ligne d'état en lecture seule affichant le code d'entrée exact renvoyé par l'ampli
-  (ex. `TUNER`, `BD`, `NET`). Pour changer d'entrée, utilisez l'action **Sélectionner l'entrée**
-  décrite ci-dessous.
+- **Source** — un menu déroulant des codes d'entrée de l'ampli (ex. `TUNER`, `BD`, `NET`),
+  directement sur le tableau de bord. L'action **Sélectionner l'entrée** décrite ci-dessous fait
+  exactement la même chose et reste disponible en alternative — utile si votre instance Gladys
+  est sur une version plus ancienne qui n'affiche pas encore le menu déroulant.
 
 ## Prérequis
 
