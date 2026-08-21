@@ -34,11 +34,13 @@ Four things show up per receiver:
    automatically (SSDP/UPnP) — no IP to type, no account. The receiver should appear with its
    real name and model.
 2. Add the discovered device. Gladys keeps a persistent connection to it from then on.
-3. **If nothing is found**: your network likely blocks multicast between segments (VLANs, some
-   mesh Wi-Fi setups...). Open the integration's **Configuration** tab and fill in the receiver's
-   IP address manually, save, then scan again — it will show up as a fallback entry. A fixed
-   IP or a DHCP reservation for the receiver is recommended in that case, since the manual entry
-   does not track IP changes automatically.
+3. **If nothing is found**: your network likely blocks multicast between segments (VLANs, several
+   network interfaces on the Gladys host, some mesh Wi-Fi setups...). Open the integration's
+   **Configuration** tab and fill in the receiver's IP address manually, save, then scan again —
+   it will show up as a fallback entry. Several receivers the scan can't reach (e.g. on different
+   networks)? Enter their addresses separated by commas, e.g. `192.168.1.50, 192.168.2.50` — each
+   one becomes its own fallback entry. A fixed IP or a DHCP reservation for every receiver is
+   recommended in that case, since the manual entry does not track IP changes automatically.
 4. Two actions are available from the Configuration screen for any AVR you added:
    - **Test connection** — queries the receiver and reports its current power/volume/mute/source.
    - **Select input** — pick an input from the standard list of Denon/Marantz source codes and

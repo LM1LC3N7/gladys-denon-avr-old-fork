@@ -37,10 +37,13 @@ Quatre éléments apparaissent par ampli :
    apparaître avec son vrai nom et son modèle.
 2. Ajoutez l'appareil découvert. Gladys maintient ensuite une connexion persistante avec lui.
 3. **Si rien n'est trouvé** : votre réseau bloque probablement le multicast entre segments
-   (VLAN, certains Wi-Fi maillés...). Ouvrez l'onglet **Configuration** de l'intégration et
-   renseignez manuellement l'adresse IP de l'ampli, enregistrez, puis relancez un scan : il
-   apparaîtra comme entrée de secours. Une IP fixe ou une réservation DHCP pour l'ampli est alors
-   recommandée, car l'entrée manuelle ne suit pas automatiquement les changements d'IP.
+   (VLAN, plusieurs cartes réseau sur l'hôte Gladys, certains Wi-Fi maillés...). Ouvrez l'onglet
+   **Configuration** de l'intégration et renseignez manuellement l'adresse IP de l'ampli,
+   enregistrez, puis relancez un scan : il apparaîtra comme entrée de secours. Plusieurs amplis
+   que le scan ne trouve pas (par exemple sur des réseaux différents) ? Séparez leurs adresses
+   par des virgules, ex. `192.168.1.50, 192.168.2.50` — chacune devient sa propre entrée de
+   secours. Une IP fixe ou une réservation DHCP pour chaque ampli est alors recommandée, car
+   l'entrée manuelle ne suit pas automatiquement les changements d'IP.
 4. Deux actions sont disponibles depuis l'écran de configuration pour chaque ampli ajouté :
    - **Tester la connexion** — interroge l'ampli et rapporte son état actuel (alimentation,
      volume, muet, source).
