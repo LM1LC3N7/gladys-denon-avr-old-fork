@@ -218,6 +218,15 @@ export function __setConnectionForTesting(externalId, telnetClient) {
   connections.set(externalId, telnetClient);
 }
 
+/**
+ * Test-only hook: seed the last-known-state cache for a given external_id,
+ * so the MUTE toggle logic in onSetValue() can be tested without a real
+ * receiver pushing state back over Telnet. Not used by production code.
+ */
+export function __setLastKnownStateForTesting(externalId, state) {
+  lastKnownState.set(externalId, state);
+}
+
 /** Test-only hook: drop every registered connection between tests. */
 export function __clearConnectionsForTesting() {
   connections.clear();
@@ -252,7 +261,15 @@ export async function onSetValue(gladys, { device, feature, value }) {
   } else if (key === FEATURE.VOLUME) {
     command = buildVolumeCommand(value);
   } else if (key === FEATURE.MUTE) {
-    command = buildMuteCommand(value === 1);
+    // DEVICE_FEATURE_TYPES.TELEVISION.VOLUME_MUTE is a remote-control button
+    // (same family as VOLUME_UP/VOLUME_DOWN), not a stateful switch like
+    // POWER's BINARY type — `value` is not a target state to set, it's just
+    // a "button pressed" signal (observed constant across presses on a real
+    // instance: trusting it as a target made every press send the same
+    // command, so the second press never undid the first). Toggle off the
+    // receiver's own last-reported mute state instead.
+    const currentlyMuted = lastKnownState.get(device.external_id)?.mute === 1;
+    command = buildMuteCommand(!currentlyMuted);
   } else {
     throw new Error(
       `Feature "${key}" is not controllable (use the select_source action for the source)`,

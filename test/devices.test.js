@@ -17,6 +17,7 @@ import {
   runTestConnectionAction,
   runSelectSourceAction,
   __setConnectionForTesting,
+  __setLastKnownStateForTesting,
   __clearConnectionsForTesting,
 } from '../src/devices/avr.js';
 import { normalizeConfig } from '../src/config.js';
@@ -109,7 +110,7 @@ test('buildManualDevice builds a stable device keyed on the configured host', ()
   assert.equal(device.features.length, 4);
 });
 
-test('onSetValue routes power/volume/mute to the right telnet command', async () => {
+test('onSetValue routes power/volume to the right telnet command', async () => {
   const device = buildDiscoveredDevice(gladys, DISCOVERED);
   const telnet = createFakeTelnetClient();
   __setConnectionForTesting(device.external_id, telnet);
@@ -121,10 +122,31 @@ test('onSetValue routes power/volume/mute to the right telnet command', async ()
   const volumeFeature = { external_id: featureExternalId(device.external_id, FEATURE.VOLUME) };
   await onSetValue(gladys, { device, feature: volumeFeature, value: 50 });
   assert.equal(telnet.sent.at(-1), 'MV49');
+});
 
+test("onSetValue toggles mute off the receiver's last-reported state, ignoring the incoming value", async () => {
+  // TELEVISION.VOLUME_MUTE is a remote-control button, not a stateful
+  // switch: Gladys sends a "pressed" signal, not a target on/off value —
+  // this is exactly the bug a real receiver surfaced (every press sent the
+  // same command). `value` must have zero effect on which command is sent.
+  const device = buildDiscoveredDevice(gladys, DISCOVERED);
+  const telnet = createFakeTelnetClient();
+  __setConnectionForTesting(device.external_id, telnet);
   const muteFeature = { external_id: featureExternalId(device.external_id, FEATURE.MUTE) };
+
+  __setLastKnownStateForTesting(device.external_id, { mute: 0 });
+  await onSetValue(gladys, { device, feature: muteFeature, value: 0 });
+  assert.equal(telnet.sent.at(-1), 'MUON');
+
+  __setLastKnownStateForTesting(device.external_id, { mute: 1 });
   await onSetValue(gladys, { device, feature: muteFeature, value: 0 });
   assert.equal(telnet.sent.at(-1), 'MUOFF');
+
+  // Nothing known yet (fresh device, receiver hasn't reported a state):
+  // defaults to "currently unmuted" -> first press mutes.
+  __setLastKnownStateForTesting(device.external_id, undefined);
+  await onSetValue(gladys, { device, feature: muteFeature, value: 1 });
+  assert.equal(telnet.sent.at(-1), 'MUON');
 });
 
 test('onSetValue rejects the read-only source feature', async () => {
